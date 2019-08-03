@@ -5,63 +5,74 @@
 <title>素数大富豪大会用タイマー</title>
 <style>
 #timerA {
-    display: block;
+	display: block;
 	cursor: pointer;
     width: 512px;
     text-align: center;
     border: 1px solid #400;
 	background: #fcc;
 }
-span.textTimer {
+#timerA.move {
+	display: block;
+	cursor: pointer;
+    width: 512px;
+    text-align: center;
+    border: 1px solid #400;
+	background: #fcc;
+}
+span.textTimerA {
+	font-size: 800%;
+    color: #866;
+}
+span.textTimerA.moving {
 	font-size: 800%;
     color: #400;
 }
+
 </style>
 </head>
 <body>
 
-<div id="timerA"><span id="textA" class="textTimer"></span></div>
+<div id="timerA"><span id="textA" class="textTimerA"></span></div>
 <input type="button" value="リセット" onclick="resetTimer();">
 
 <script>
-	var lengthA = 60;
+	var lengthA = 600;
 	var countA = lengthA;
     var movingA = false;
     var PassageID;
     function timerFormat(second) {
-    	let minute = second / 60 | 0;
-        second %= 60;
-        var str = "";
-        if(minute < 10) str += "0";
-        str += String(minute);
-        str += ":";
-        if(second < 10) str += "0";
-        str += String(second);
+        var str = String(second / 10);
+        if(second % 10 === 0) str += ".0"
         return str;
     }
     document.getElementById("textA").innerHTML = timerFormat(countA);
 	document.getElementById("timerA").onclick = function() {
         clearInterval(PassageID);
-        if (!moving && countA) {
-        	PassageID = setInterval("countTimerA()", 1000);
-        	moving = true;
+        if (!movingA && countA) {
+        	PassageID = setInterval("countTimerA()", 100);
+        	movingA = true;
+            document.getElementById("textA").classList.add("moving");
+            return;
         }
-        else {
-        	moving = false;
-        }
+        document.getElementById("textA").classList.remove("moving");
+    	movingA = false;
     };
     function resetTimer() {
     	countA = lengthA;
         clearInterval(PassageID);
     	document.getElementById("textA").innerHTML = timerFormat(countA);
-        moving = false;
+        document.getElementById("textA").classList.remove("moving");
+        movingA = false;
     }
     function countTimerA() {
 		countA--;
 		document.getElementById("textA").innerHTML = timerFormat(countA);
         if(countA === 0) {
         	clearInterval(PassageID);
-            moving = false;
+        	document.getElementById("textA").classList.remove("moving");
+            movingA = false;
+            return;
         }
 	}
 </script>
