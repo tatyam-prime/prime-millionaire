@@ -1,9 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-  </head>
-  <body>
-    Sample
-  </body>
+<head>
+<meta charset="UTF-8">
+<title>素数大富豪大会用タイマー</title>
+<style>
+#timerA {
+    display: block;
+	cursor: pointer;
+    width: 512px;
+    text-align: center;
+    border: 1px solid #400;
+	background: #fcc;
+}
+span.textTimer {
+	font-size: 800%;
+    color: #400;
+}
+</style>
+</head>
+<body>
+
+<div id="timerA"><span id="textA" class="textTimer"></span></div>
+<input type="button" value="リセット" onclick="resetTimer();">
+
+<script>
+	var lengthA = 60;
+	var countA = lengthA;
+    var movingA = false;
+    var PassageID;
+    function timerFormat(second) {
+    	let minute = second / 60 | 0;
+        second %= 60;
+        var str = "";
+        if(minute < 10) str += "0";
+        str += String(minute);
+        str += ":";
+        if(second < 10) str += "0";
+        str += String(second);
+        return str;
+    }
+    document.getElementById("textA").innerHTML = timerFormat(countA);
+	document.getElementById("timerA").onclick = function() {
+        clearInterval(PassageID);
+        if (!moving && countA) {
+        	PassageID = setInterval("countTimerA()", 1000);
+        	moving = true;
+        }
+        else {
+        	moving = false;
+        }
+    };
+    function resetTimer() {
+    	countA = lengthA;
+        clearInterval(PassageID);
+    	document.getElementById("textA").innerHTML = timerFormat(countA);
+        moving = false;
+    }
+    function countTimerA() {
+		countA--;
+		document.getElementById("textA").innerHTML = timerFormat(countA);
+        if(countA === 0) {
+        	clearInterval(PassageID);
+            moving = false;
+        }
+	}
+</script>
+</body>
 </html>
