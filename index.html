@@ -2,23 +2,23 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>素数大富豪大会用タイマー</title>
+<title>タイマー</title>
 <style>
 #timerA {
 	display: block;
 	cursor: pointer;
-    width: 512px;
-    text-align: center;
-    border: 1px solid #400;
+	width: 512px;
+	text-align: center;
+	border: 1px solid #400;
 	background: #fcc;
 }
 span.textTimerA {
 	font-size: 800%;
-    color: #866;
+	color: #866;
 }
 span.textTimerA.moving {
 	font-size: 800%;
-    color: #400;
+	color: #400;
 }
 
 </style>
@@ -31,41 +31,41 @@ span.textTimerA.moving {
 <script>
 	var lengthA = 600;
 	var countA = lengthA;
-    var movingA = false;
-    var PassageID;
-    function timerFormat(second) {
+	var movingA = false;
+	var PassageID;
+	function timerFormat(second) {
         var str = String(second / 10);
         if(second % 10 === 0) str += ".0"
         return str;
-    }
-    document.getElementById("textA").innerHTML = timerFormat(countA);
+	}
+	document.getElementById("textA").innerHTML = timerFormat(countA);
 	document.getElementById("timerA").onclick = function() {
-        clearInterval(PassageID);
-        if (!movingA && countA) {
-        	PassageID = setInterval("countTimerA()", 100);
-        	movingA = true;
-            document.getElementById("textA").classList.add("moving");
-            return;
-        }
-        document.getElementById("textA").classList.remove("moving");
-    	movingA = false;
-    };
-    function resetTimer() {
-    	countA = lengthA;
-        clearInterval(PassageID);
-    	document.getElementById("textA").innerHTML = timerFormat(countA);
-        document.getElementById("textA").classList.remove("moving");
-        movingA = false;
-    }
-    function countTimerA() {
+		clearInterval(PassageID);
+		if (!movingA && countA) {
+			PassageID = setInterval("countTimerA()", 100);
+			movingA = true;
+			document.getElementById("textA").classList.add("moving");
+			return;
+		}
+		document.getElementById("textA").classList.remove("moving");
+		movingA = false;
+	};
+	function resetTimer() {
+		countA = lengthA;
+		clearInterval(PassageID);
+		document.getElementById("textA").innerHTML = timerFormat(countA);
+		document.getElementById("textA").classList.remove("moving");
+		movingA = false;
+	}
+	function countTimerA() {
 		countA--;
 		document.getElementById("textA").innerHTML = timerFormat(countA);
-        if(countA === 0) {
-        	clearInterval(PassageID);
-        	document.getElementById("textA").classList.remove("moving");
-            movingA = false;
-            return;
-        }
+		if(countA === 0) {
+			clearInterval(PassageID);
+			document.getElementById("textA").classList.remove("moving");
+			movingA = false;
+			return;
+		}
 	}
 </script>
 </body>
