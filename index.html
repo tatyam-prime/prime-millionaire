@@ -5,9 +5,9 @@
 <title>タイマー</title>
 <style>
 #timerA {
-	display: block;
+	display: inline-block;
 	cursor: pointer;
-	width: 512px;
+	width: 384px;
 	text-align: center;
 	border: 1px solid #400;
 	background: #fcc;
@@ -20,14 +20,31 @@ span.textTimerA.moving {
 	font-size: 800%;
 	color: #400;
 }
-
+#timerB {
+	display: inline-block;
+	cursor: pointer;
+	width: 384px;
+	text-align: center;
+	border: 1px solid #004;
+	background: #ccf;
+}
+span.textTimerB {
+	font-size: 800%;
+	color: #668;
+}
+span.textTimerB.moving {
+	font-size: 800%;
+	color: #004;
+}
 </style>
 </head>
 <body>
 
 <div id="timerA"><span id="textA" class="textTimerA"></span></div>
+<div id="timerB"><span id="textB" class="textTimerB">60.0</span></div>
 <input type="button" value="リセット" onclick="resetTimer();">
 
+<script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
 <script>
 	var lengthA = 600;
 	var countA = lengthA;
