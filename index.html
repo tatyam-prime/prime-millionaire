@@ -41,48 +41,88 @@ span.textTimerB.moving {
 <body>
 
 <div id="timerA"><span id="textA" class="textTimerA"></span></div>
-<div id="timerB"><span id="textB" class="textTimerB">60.0</span></div>
+<div id="timerB"><span id="textB" class="textTimerB"></span></div>
 <input type="button" value="リセット" onclick="resetTimer();">
 
 <script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
 <script>
-	var lengthA = 600;
-	var countA = lengthA;
+	var timerLength = 600;
+	var countA = timerLength;
+	var countB = timerLength;
 	var movingA = false;
-	var PassageID;
+	var movingB = false;
+	var timerIDA;
+	var timerIDB;
 	function timerFormat(second) {
         var str = String(second / 10);
         if(second % 10 === 0) str += ".0"
         return str;
 	}
 	document.getElementById("textA").innerHTML = timerFormat(countA);
+	document.getElementById("textB").innerHTML = timerFormat(countB);
 	document.getElementById("timerA").onclick = function() {
-		clearInterval(PassageID);
-		if (!movingA && countA) {
-			PassageID = setInterval("countTimerA()", 100);
+		clearInterval(timerIDA);
+        clearInterval(timerIDB);
+        if (movingB) {
+        	document.getElementById("textB").classList.remove("moving");
+			movingB = false;
+        }
+        if (movingA) {
+        	document.getElementById("textA").classList.remove("moving");
+			movingA = false;
+        }
+		else if (countA) {
+			timerIDA = setInterval("countTimerA()", 100);
 			movingA = true;
 			document.getElementById("textA").classList.add("moving");
-			return;
 		}
-		document.getElementById("textA").classList.remove("moving");
-		movingA = false;
 	};
-	function resetTimer() {
-		countA = lengthA;
-		clearInterval(PassageID);
-		document.getElementById("textA").innerHTML = timerFormat(countA);
-		document.getElementById("textA").classList.remove("moving");
-		movingA = false;
-	}
+	document.getElementById("timerB").onclick = function() {
+		clearInterval(timerIDA);
+        clearInterval(timerIDB);
+        if (movingA) {
+        	document.getElementById("textA").classList.remove("moving");
+			movingA = false;
+        }
+        if (movingB) {
+        	document.getElementById("textB").classList.remove("moving");
+			movingB = false;
+        }
+		else if (countB) {
+			timerIDB = setInterval("countTimerB()", 100);
+			movingB = true;
+			document.getElementById("textB").classList.add("moving");
+		}
+	};
 	function countTimerA() {
 		countA--;
 		document.getElementById("textA").innerHTML = timerFormat(countA);
 		if(countA === 0) {
-			clearInterval(PassageID);
+			clearInterval(timerIDA);
 			document.getElementById("textA").classList.remove("moving");
 			movingA = false;
-			return;
 		}
+	}
+    function countTimerB() {
+		countB--;
+		document.getElementById("textB").innerHTML = timerFormat(countB);
+		if(countB === 0) {
+			clearInterval(timerIDB);
+			document.getElementById("textB").classList.remove("moving");
+			movingB = false;
+		}
+	}
+	function resetTimer() {
+		clearInterval(timerIDA);
+        clearInterval(timerIDB);
+		countA = timerLength;
+		countB = timerLength;
+		movingA = false;
+		movingB = false;
+		document.getElementById("textA").innerHTML = timerFormat(countA);
+		document.getElementById("textB").innerHTML = timerFormat(countB);
+		document.getElementById("textA").classList.remove("moving");
+		document.getElementById("textB").classList.remove("moving");
 	}
 </script>
 </body>
