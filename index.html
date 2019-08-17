@@ -7,7 +7,7 @@
 #timerA {
 	display: inline-block;
 	cursor: pointer;
-	width: 384px;
+	width: 49.1%;
 	text-align: center;
 	border: 1px solid #400;
 	background: #fcc;
@@ -23,7 +23,7 @@ span.textTimerA.moving {
 #timerB {
 	display: inline-block;
 	cursor: pointer;
-	width: 384px;
+	width: 49.1%;
 	text-align: center;
 	border: 1px solid #004;
 	background: #ccf;
@@ -36,13 +36,97 @@ span.textTimerB.moving {
 	font-size: 800%;
 	color: #004;
 }
+#primeChecker {
+	display: block;
+	width: 99.5%;
+	text-align: center;
+	border: 1px solid #333;
+	background: #eee;
+}
+#judgeNumber {
+	display: inline-block;
+	margin: 6px;
+	width: 98%;
+	text-align: center;
+	border: 1px solid #030;
+	background: #ded;
+    font-size: 300%;
+	color: #232;
+}
+.button {
+	display: inline-block;
+	margin: 0px;
+	width: 16.1%;
+	text-align: center;
+	border: 1px solid #030;
+	background: #888;
+    font-size: 300%;
+	color: #f9fff9;
+}
+.buttonGray {
+	display: inline-block;
+	margin: 0px;
+	width: 16.1%;
+	text-align: center;
+	border: 1px solid #030;
+	background: #999;
+    font-size: 300%;
+	color: #f9fff9;
+}
+.buttonRed {
+	display: inline-block;
+	margin: 0px;
+	width: 16.1%;
+	text-align: center;
+	border: 1px solid #030;
+	background: #c88;
+    font-size: 300%;
+	color: #f9fff9;
+}
+#buttonJudge {
+	display: inline-block;
+	margin: 0px;
+	width: 32.4%;
+	text-align: center;
+	border: 1px solid #030;
+	background: #c88;
+    font-size: 300%;
+	color: #f9fff9;
+}
 </style>
 </head>
 <body>
-
+<div>
 <div id="timerA"><span id="textA" class="textTimerA"></span></div>
 <div id="timerB"><span id="textB" class="textTimerB"></span></div>
+</div>
 <input type="button" value="リセット" onclick="resetTimer();">
+<div id="primeChecker">
+<div id="judgeNumber">0</div>
+<div id="column1">
+<div id="button1" class="button" onclick="button1();">1</div><!--
+--><div id="button2" class="button" onclick="button2();">2</div><!--
+--><div id="button3" class="button" onclick="button3();">3</div><!--
+--><div id="button4" class="button" onclick="button4();">4</div><!--
+--><div id="button5" class="button" onclick="button5();">5</div><!--
+--><div id="buttonClear" class="buttonRed" onclick="buttonClear();">AC</div>
+</div>
+<div id="column2">
+<div id="button6" class="button" onclick="button6();">6</div><!--
+--><div id="button7" class="button" onclick="button7();">7</div><!--
+--><div id="button8" class="button" onclick="button8();">8</div><!--
+--><div id="button9" class="button" onclick="button9();">9</div><!--
+--><div id="button0" class="button" onclick="button0();">0</div><!--
+--><div id="buttonDelete" class="buttonRed" onclick="buttonDelete();">BS</div>
+</div>
+<div id="column3">
+<div id="buttonT" class="buttonGray" onclick="buttonT();">T</div><!--
+--><div id="buttonJ" class="buttonGray" onclick="buttonJ();">J</div><!--
+--><div id="buttonQ" class="buttonGray" onclick="buttonQ();">Q</div><!--
+--><div id="buttonK" class="buttonGray" onclick="buttonK();">K</div><!--
+--><div id="buttonJudge" onclick="buttonJudge();">GO</div>
+</div>
+</div>
 
 <script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
 <script>
