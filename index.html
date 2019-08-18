@@ -45,12 +45,22 @@ span.textTimerB.moving {
 }
 #judgeNumber {
 	display: inline-block;
-	margin: 6px;
+	margin: 6px 6px 0px 6px;
 	width: 98%;
 	text-align: center;
 	border: 1px solid #030;
 	background: #ded;
     font-size: 300%;
+	color: #232;
+}
+#result {
+	display: inline-block;
+	margin: 0px 6px 6px 6px;
+	width: 98%;
+	text-align: center;
+	border: 1px solid #030;
+	background: #ded;
+    font-size: 150%;
 	color: #232;
 }
 .button {
@@ -102,29 +112,30 @@ span.textTimerB.moving {
 </div>
 <input type="button" value="リセット" onclick="resetTimer();">
 <div id="primeChecker">
-<div id="judgeNumber">0</div>
+<div id="judgeNumber"></div>
+<div id="result">　</div>
 <div id="column1">
-<div id="button1" class="button" onclick="button1();">1</div><!--
---><div id="button2" class="button" onclick="button2();">2</div><!--
---><div id="button3" class="button" onclick="button3();">3</div><!--
---><div id="button4" class="button" onclick="button4();">4</div><!--
---><div id="button5" class="button" onclick="button5();">5</div><!--
---><div id="buttonClear" class="buttonRed" onclick="buttonClear();">AC</div>
+<div id="button1" class="button" onclick="push(1);">1</div><!--
+--><div id="button2" class="button" onclick="push(2);">2</div><!--
+--><div id="button3" class="button" onclick="push(3);">3</div><!--
+--><div id="button4" class="button" onclick="push(4);">4</div><!--
+--><div id="button5" class="button" onclick="push(5);">5</div><!--
+--><div id="buttonClear" class="buttonRed" onclick="pushClear();">AC</div>
 </div>
 <div id="column2">
-<div id="button6" class="button" onclick="button6();">6</div><!--
---><div id="button7" class="button" onclick="button7();">7</div><!--
---><div id="button8" class="button" onclick="button8();">8</div><!--
---><div id="button9" class="button" onclick="button9();">9</div><!--
---><div id="button0" class="button" onclick="button0();">0</div><!--
---><div id="buttonDelete" class="buttonRed" onclick="buttonDelete();">BS</div>
+<div id="button6" class="button" onclick="push(6);">6</div><!--
+--><div id="button7" class="button" onclick="push(7);">7</div><!--
+--><div id="button8" class="button" onclick="push(8);">8</div><!--
+--><div id="button9" class="button" onclick="push(9);">9</div><!--
+--><div id="button0" class="button" onclick="push(0);">0</div><!--
+--><div id="buttonDelete" class="buttonRed" onclick="pushDelete();">BS</div>
 </div>
 <div id="column3">
-<div id="buttonT" class="buttonGray" onclick="buttonT();">T</div><!--
---><div id="buttonJ" class="buttonGray" onclick="buttonJ();">J</div><!--
---><div id="buttonQ" class="buttonGray" onclick="buttonQ();">Q</div><!--
---><div id="buttonK" class="buttonGray" onclick="buttonK();">K</div><!--
---><div id="buttonJudge" onclick="buttonJudge();">GO</div>
+<div id="buttonT" class="buttonGray" onclick="push(10);">T</div><!--
+--><div id="buttonJ" class="buttonGray" onclick="push(11);">J</div><!--
+--><div id="buttonQ" class="buttonGray" onclick="push(12);">Q</div><!--
+--><div id="buttonK" class="buttonGray" onclick="push(13);">K</div><!--
+--><div id="buttonJudge" onclick="pushJudge();">Judge</div>
 </div>
 </div>
 
@@ -137,6 +148,8 @@ span.textTimerB.moving {
 	var movingB = false;
 	var timerIDA;
 	var timerIDB;
+    var number = bigInt(0);
+    var judged = false;
 	function timerFormat(second) {
         var str = String(second / 10);
         if(second % 10 === 0) str += ".0"
@@ -208,6 +221,35 @@ span.textTimerB.moving {
 		document.getElementById("textA").classList.remove("moving");
 		document.getElementById("textB").classList.remove("moving");
 	}
+	document.getElementById("judgeNumber").innerHTML = number.toString();
+    function push(x) {
+    	if(judged) {
+        	judged = false;
+            number = bigInt(0);
+        }
+        if(x > 9) number = number.multiply(100);
+        else number = number.multiply(10);
+        number = number.add(x);
+        document.getElementById("judgeNumber").innerHTML = number.toString();
+        document.getElementById("result").innerHTML = "　"
+    }
+    function pushClear() {
+    	judged = false;
+    	number = bigInt(0);
+        document.getElementById("judgeNumber").innerHTML = number.toString();
+        document.getElementById("result").innerHTML = "　"
+    }
+    function pushDelete() {
+    	judged = false;
+    	number = number.over(10);
+        document.getElementById("judgeNumber").innerHTML = number.toString();
+        document.getElementById("result").innerHTML = "　"
+    }
+    function pushJudge() {
+    	judged = true;
+        if(number.isProbablePrime(100)) document.getElementById("result").innerHTML = "は素数です";
+        else document.getElementById("result").innerHTML = "は素数ではありません";
+    }
 </script>
 </body>
 </html>
