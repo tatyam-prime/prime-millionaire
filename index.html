@@ -160,6 +160,7 @@ span.textTimerB.moving {
 	document.getElementById("timerA").onclick = function() {
 		clearInterval(timerIDA);
         clearInterval(timerIDB);
+        pushClear();
         if (movingB) {
         	document.getElementById("textB").classList.remove("moving");
 			movingB = false;
@@ -177,6 +178,7 @@ span.textTimerB.moving {
 	document.getElementById("timerB").onclick = function() {
 		clearInterval(timerIDA);
         clearInterval(timerIDB);
+        pushClear();
         if (movingA) {
         	document.getElementById("textA").classList.remove("moving");
 			movingA = false;
