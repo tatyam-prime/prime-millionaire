@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <title>タイマー</title>
 <style>
+#timerC {
+	display: block;
+	width: 768px;
+	text-align: center;
+	border: 1px solid #000;
+	background: #ccc;
+}
+span.textTimerC {
+	font-size: 500%;
+	color: #666;
+    font-weight: bold;
+}
+span.textTimerC.moving {
+	color: #111;
+}
 #timerA {
 	display: inline-block;
 	cursor: pointer;
@@ -101,6 +116,7 @@ span.textTimerB.moving {
 </style>
 </head>
 <body>
+<div id="timerC"><span id="textC" class="textTimerC"></span></div>
 <div>
 <div id="timerA"><span id="textA" class="textTimerA"></span></div>
 <div id="timerB"><span id="textB" class="textTimerB"></span></div>
@@ -136,22 +152,36 @@ span.textTimerB.moving {
 
 <script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
 <script>
-	var timerLength = 600;
-	var countA = timerLength;
-	var countB = timerLength;
-	var movingA = false;
-	var movingB = false;
-	var timerIDA;
-	var timerIDB;
-	var number = bigInt(0);
-	var judged = false;
+	var timerLength = 600
+	var matchLength = 900
+	var countA = timerLength
+	var countB = timerLength
+	var countC = matchLength
+	var movingA = false
+	var movingB = false
+	var movingC = false
+	var timerIDA
+	var timerIDB
+	var timerIDC
+	var number = bigInt(0)
+	var judged = false
 	function timerFormat(second) {
-        var str = String(second / 10);
+        var str = String(second / 10)
         if(second % 10 === 0) str += ".0"
-        return str;
+        return str
 	}
-	document.getElementById("textA").innerHTML = timerFormat(countA);
-	document.getElementById("textB").innerHTML = timerFormat(countB);
+	function timerFormat2(second) {
+        var s = ""
+        if (second / 60 < 10) s += "0"
+        s += second / 60 | 0
+        s += ":"
+        if (second % 60 < 10) s += "0"
+        s += second % 60
+        return s
+	}
+	document.getElementById("textA").innerHTML = timerFormat(countA)
+	document.getElementById("textB").innerHTML = timerFormat(countB)
+	document.getElementById("textC").innerHTML = timerFormat2(countC)
 	document.getElementById("timerA").onclick = function() {
 		clearInterval(timerIDA);
 		clearInterval(timerIDB);
@@ -163,11 +193,17 @@ span.textTimerB.moving {
 			document.getElementById("textA").classList.remove("moving");
 			movingA = false;
 		}
-		else if (countA) {
+		else {
+		    countA = timerLength;
 			timerIDA = setInterval("countTimerA()", 100);
 			movingA = true;
 			document.getElementById("textA").classList.add("moving");
 		}
+        if (!movingC) {
+            timerIDC = setInterval("countTimerC()", 1000);
+			movingC = true;
+			document.getElementById("textC").classList.add("moving");
+        }
 	};
 	document.getElementById("timerB").onclick = function() {
 		clearInterval(timerIDA);
@@ -180,11 +216,17 @@ span.textTimerB.moving {
 			document.getElementById("textB").classList.remove("moving");
 			movingB = false;
 		}
-		else if (countB) {
+		else {
+            countB = timerLength;
 			timerIDB = setInterval("countTimerB()", 100);
 			movingB = true;
 			document.getElementById("textB").classList.add("moving");
 		}
+        if (!movingC) {
+            timerIDC = setInterval("countTimerC()", 1000);
+			movingC = true;
+			document.getElementById("textC").classList.add("moving");
+        }
 	};
 	function countTimerA() {
 		countA--;
@@ -196,25 +238,37 @@ span.textTimerB.moving {
 		}
 	}
 	function countTimerB() {
-		countB--;
-		document.getElementById("textB").innerHTML = timerFormat(countB);
+		countB--
+		document.getElementById("textB").innerHTML = timerFormat(countB)
 		if(countB === 0) {
-			clearInterval(timerIDB);
-			document.getElementById("textB").classList.remove("moving");
-			movingB = false;
+			clearInterval(timerIDB)
+			document.getElementById("textB").classList.remove("moving")
+			movingB = false
+		}
+	}
+    function countTimerC() {
+		countC--
+		document.getElementById("textC").innerHTML = timerFormat2(countC)
+		if(countC === 0) {
+			clearInterval(timerIDC)
 		}
 	}
 	function resetTimer() {
 		clearInterval(timerIDA);
 		clearInterval(timerIDB);
+		clearInterval(timerIDC);
 		countA = timerLength;
 		countB = timerLength;
+		countC = matchLength;
 		movingA = false;
 		movingB = false;
+		movingC = false;
 		document.getElementById("textA").innerHTML = timerFormat(countA);
 		document.getElementById("textB").innerHTML = timerFormat(countB);
+		document.getElementById("textC").innerHTML = timerFormat2(countC);
 		document.getElementById("textA").classList.remove("moving");
 		document.getElementById("textB").classList.remove("moving");
+		document.getElementById("textC").classList.remove("moving");
 	}
 	document.getElementById("judgeNumber").innerHTML = number.toString();
 	function push(x) {
