@@ -209,6 +209,7 @@
                 }
                 if (!movingC) {
                     countC = matchLength
+                    document.getElementById("textC").innerHTML = timerFormat2(countC)
                     timerIDC = setInterval("countTimerC()", 1000)
                     movingC = true
                     document.getElementById("textC").classList.add("moving")
@@ -234,6 +235,7 @@
                 }
                 if (!movingC) {
                     countC = matchLength
+                    document.getElementById("textC").innerHTML = timerFormat2(countC)
                     timerIDC = setInterval("countTimerC()", 1000)
                     movingC = true
                     document.getElementById("textC").classList.add("moving")
