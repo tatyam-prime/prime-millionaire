@@ -1,304 +1,327 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>タイマー</title>
-<style>
-#timerC {
-	display: block;
-	width: 768px;
-	text-align: center;
-	border: 1px solid #000;
-	background: #ccc;
-}
-span.textTimerC {
-	font-size: 500%;
-	color: #666;
-    font-weight: bold;
-}
-span.textTimerC.moving {
-	color: #111;
-}
-#timerA {
-	display: inline-block;
-	cursor: pointer;
-	width: 380px;
-	text-align: center;
-	border: 1px solid #400;
-	background: #fcc;
-}
-span.textTimerA {
-	font-size: 900%;
-	color: #866;
-}
-span.textTimerA.moving {
-	color: #400;
-}
-#timerB {
-	display: inline-block;
-	cursor: pointer;
-	width: 380px;
-	text-align: center;
-	border: 1px solid #004;
-	background: #ccf;
-}
-span.textTimerB {
-	font-size: 900%;
-	color: #668;
-}
-span.textTimerB.moving {
-	color: #004;
-}
-#primeChecker {
-	display: block;
-	width: 768px;
-	text-align: center;
-	border: 1px solid #333;
-	background: #eee;
-}
-#judgeNumber {
-	display: inline-block;
-	margin: 6px 6px 0px 6px;
-	width: 754px;
-	text-align: center;
-	border: 1px solid #030;
-	background: #ded;
-	font-size: 350%;
-	color: #232;
-    word-wrap: break-word;
-}
-#result {
-	display: inline-block;
-	margin: 0px 6px 6px 6px;
-	width: 754px;
-	text-align: center;
-	border: 1px solid #030;
-	background: #ded;
-	font-size: 160%;
-	color: #232;
-}
-.button {
-	display: inline-block;
-	width: 124px;
-	text-align: center;
-	border: 1px solid #030;
-	background: #888;
-	font-size: 350%;
-	color: #f9fff9;
-}
-.buttonGray {
-	display: inline-block;
-	width: 124px;
-	text-align: center;
-	border: 1px solid #030;
-	background: #999;
-	font-size: 350%;
-	color: #f9fff9;
-}
-.buttonRed {
-	display: inline-block;
-	width: 124px;
-	text-align: center;
-	border: 1px solid #030;
-	background: #c88;
-	font-size: 350%;
-	color: #f9fff9;
-}
-#buttonJudge {
-	display: inline-block;
-	width: 250px;
-	text-align: center;
-	border: 1px solid #030;
-	background: #c88;
-	font-size: 350%;
-	color: #f9fff9;
-}
-</style>
-</head>
-<body>
-<div id="timerC"><span id="textC" class="textTimerC"></span></div>
-<div>
-<div id="timerA"><span id="textA" class="textTimerA"></span></div>
-<div id="timerB"><span id="textB" class="textTimerB"></span></div>
-</div>
-<input type="button" value="リセット" onclick="resetTimer();">
-<div id="primeChecker">
-<div id="judgeNumber"></div>
-<div id="result">　</div>
-<div id="column1">
-<div id="button1" class="button" onclick="push(1);">1</div><!--
---><div id="button2" class="button" onclick="push(2);">2</div><!--
---><div id="button3" class="button" onclick="push(3);">3</div><!--
---><div id="button4" class="button" onclick="push(4);">4</div><!--
---><div id="button5" class="button" onclick="push(5);">5</div><!--
---><div id="buttonClear" class="buttonRed" onclick="pushClear();">AC</div>
-</div>
-<div id="column2">
-<div id="button6" class="button" onclick="push(6);">6</div><!--
---><div id="button7" class="button" onclick="push(7);">7</div><!--
---><div id="button8" class="button" onclick="push(8);">8</div><!--
---><div id="button9" class="button" onclick="push(9);">9</div><!--
---><div id="button0" class="button" onclick="push(0);">0</div><!--
---><div id="buttonDelete" class="buttonRed" onclick="pushDelete();">BS</div>
-</div>
-<div id="column3">
-<div id="buttonT" class="buttonGray" onclick="push(10);">T</div><!--
---><div id="buttonJ" class="buttonGray" onclick="push(11);">J</div><!--
---><div id="buttonQ" class="buttonGray" onclick="push(12);">Q</div><!--
---><div id="buttonK" class="buttonGray" onclick="push(13);">K</div><!--
---><div id="buttonJudge" onclick="pushJudge();">Judge</div>
-</div>
-</div>
-
-<script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
-<script>
-	var timerLength = 600
-	var matchLength = 900
-	var countA = timerLength
-	var countB = timerLength
-	var countC = matchLength
-	var movingA = false
-	var movingB = false
-	var movingC = false
-	var timerIDA
-	var timerIDB
-	var timerIDC
-	var number = bigInt(0)
-	var judged = false
-	function timerFormat(second) {
-        var str = String(second / 10)
-        if(second % 10 === 0) str += ".0"
-        return str
-	}
-	function timerFormat2(second) {
-        var s = ""
-        if (second / 60 < 10) s += "0"
-        s += second / 60 | 0
-        s += ":"
-        if (second % 60 < 10) s += "0"
-        s += second % 60
-        return s
-	}
-	document.getElementById("textA").innerHTML = timerFormat(countA)
-	document.getElementById("textB").innerHTML = timerFormat(countB)
-	document.getElementById("textC").innerHTML = timerFormat2(countC)
-	document.getElementById("timerA").onclick = function() {
-		clearInterval(timerIDA);
-		clearInterval(timerIDB);
-		if (movingB) {
-			document.getElementById("textB").classList.remove("moving");
-			movingB = false;
-		}
-		if (movingA) {
-			document.getElementById("textA").classList.remove("moving");
-			movingA = false;
-		}
-		else {
-		    countA = timerLength;
-			timerIDA = setInterval("countTimerA()", 100);
-			movingA = true;
-			document.getElementById("textA").classList.add("moving");
-		}
-        if (!movingC) {
-            timerIDC = setInterval("countTimerC()", 1000);
-			movingC = true;
-			document.getElementById("textC").classList.add("moving");
-        }
-	};
-	document.getElementById("timerB").onclick = function() {
-		clearInterval(timerIDA);
-		clearInterval(timerIDB);
-		if (movingA) {
-			document.getElementById("textA").classList.remove("moving");
-			movingA = false;
-		}
-		if (movingB) {
-			document.getElementById("textB").classList.remove("moving");
-			movingB = false;
-		}
-		else {
-            countB = timerLength;
-			timerIDB = setInterval("countTimerB()", 100);
-			movingB = true;
-			document.getElementById("textB").classList.add("moving");
-		}
-        if (!movingC) {
-            timerIDC = setInterval("countTimerC()", 1000);
-			movingC = true;
-			document.getElementById("textC").classList.add("moving");
-        }
-	};
-	function countTimerA() {
-		countA--;
-		document.getElementById("textA").innerHTML = timerFormat(countA);
-		if(countA === 0) {
-			clearInterval(timerIDA);
-			document.getElementById("textA").classList.remove("moving");
-			movingA = false;
-		}
-	}
-	function countTimerB() {
-		countB--
-		document.getElementById("textB").innerHTML = timerFormat(countB)
-		if(countB === 0) {
-			clearInterval(timerIDB)
-			document.getElementById("textB").classList.remove("moving")
-			movingB = false
-		}
-	}
-    function countTimerC() {
-		countC--
-		document.getElementById("textC").innerHTML = timerFormat2(countC)
-		if(countC === 0) {
-			clearInterval(timerIDC)
-		}
-	}
-	function resetTimer() {
-		clearInterval(timerIDA);
-		clearInterval(timerIDB);
-		clearInterval(timerIDC);
-		countA = timerLength;
-		countB = timerLength;
-		countC = matchLength;
-		movingA = false;
-		movingB = false;
-		movingC = false;
-		document.getElementById("textA").innerHTML = timerFormat(countA);
-		document.getElementById("textB").innerHTML = timerFormat(countB);
-		document.getElementById("textC").innerHTML = timerFormat2(countC);
-		document.getElementById("textA").classList.remove("moving");
-		document.getElementById("textB").classList.remove("moving");
-		document.getElementById("textC").classList.remove("moving");
-	}
-	document.getElementById("judgeNumber").innerHTML = number.toString();
-	function push(x) {
-		if(judged) {
-			judged = false;
-			number = bigInt(0);
-		}
-		if(x > 9) number = number.multiply(100);
-		else number = number.multiply(10);
-		number = number.add(x);
-		document.getElementById("judgeNumber").innerHTML = number.toString();
-		document.getElementById("result").innerHTML = "　"
-	}
-	function pushClear() {
-		judged = false;
-		number = bigInt(0);
-		document.getElementById("judgeNumber").innerHTML = number.toString();
-		document.getElementById("result").innerHTML = "　"
-	}
-	function pushDelete() {
-		judged = false;
-		number = number.over(10);
-		document.getElementById("judgeNumber").innerHTML = number.toString();
-		document.getElementById("result").innerHTML = "　"
-	}
-	function pushJudge() {
-		judged = true;
-		if(number.isProbablePrime(100)) document.getElementById("result").innerHTML = "は素数です";
-		else document.getElementById("result").innerHTML = "は素数ではありません";
-	}
-</script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>タイマー</title>
+        <style>
+            #timerC {
+                display: block
+                width: 768px
+                text-align: center
+                border: 1px solid #000
+                background: #ccc
+            }
+            span.textTimerC {
+                font-size: 500%
+                color: #666
+                font-weight: bold
+            }
+            span.textTimerC.moving {
+                color: #111
+            }
+            span.textTimerC.thinking {
+                cursor: pointer
+                color: #111
+            }
+            #timerA {
+                display: inline-block
+                cursor: pointer
+                width: 380px
+                text-align: center
+                border: 1px solid #400
+                background: #fcc
+            }
+            span.textTimerA {
+                font-size: 900%
+                color: #866
+            }
+            span.textTimerA.moving {
+                color: #400
+            }
+            #timerB {
+                display: inline-block
+                cursor: pointer
+                width: 380px
+                text-align: center
+                border: 1px solid #004
+                background: #ccf
+            }
+            span.textTimerB {
+                font-size: 900%
+                color: #668
+            }
+            span.textTimerB.moving {
+                color: #004
+            }
+            #primeChecker {
+                display: block
+                width: 768px
+                text-align: center
+                border: 1px solid #333
+                background: #eee
+            }
+            #judgeNumber {
+                display: inline-block
+                margin: 6px 6px 0px 6px
+                width: 754px
+                text-align: center
+                border: 1px solid #030
+                background: #ded
+                font-size: 350%
+                color: #232
+                word-wrap: break-word
+            }
+            #result {
+                display: inline-block
+                margin: 0px 6px 6px 6px
+                width: 754px
+                text-align: center
+                border: 1px solid #030
+                background: #ded
+                font-size: 160%
+                color: #232
+            }
+            .button {
+                display: inline-block
+                width: 124px
+                text-align: center
+                border: 1px solid #030
+                background: #888
+                font-size: 350%
+                color: #f9fff9
+            }
+            .buttonGray {
+                display: inline-block
+                width: 124px
+                text-align: center
+                border: 1px solid #030
+                background: #999
+                font-size: 350%
+                color: #f9fff9
+            }
+            .buttonRed {
+                display: inline-block
+                width: 124px
+                text-align: center
+                border: 1px solid #030
+                background: #c88
+                font-size: 350%
+                color: #f9fff9
+            }
+            #buttonJudge {
+                display: inline-block
+                width: 250px
+                text-align: center
+                border: 1px solid #030
+                background: #c88
+                font-size: 350%
+                color: #f9fff9
+            }
+        </style>
+    </head>
+    <body>
+        <div id="timerC"><span id="textC" class="textTimerC"></span></div>
+        <div>
+            <div id="timerA"><span id="textA" class="textTimerA"></span></div>
+            <div id="timerB"><span id="textB" class="textTimerB"></span></div>
+        </div>
+        <input type="button" value="リセット" onclick="resetTimer()">
+            <div id="primeChecker">
+                <div id="judgeNumber"></div>
+                <div id="result">　</div>
+                <div id="column1">
+                    <div id="button1" class="button" onclick="push(1)">1</div><!--
+                    --><div id="button2" class="button" onclick="push(2)">2</div><!--
+                    --><div id="button3" class="button" onclick="push(3)">3</div><!--
+                    --><div id="button4" class="button" onclick="push(4)">4</div><!--
+                    --><div id="button5" class="button" onclick="push(5)">5</div><!--
+                    --><div id="buttonClear" class="buttonRed" onclick="pushClear()">AC</div>
+                </div>
+                <div id="column2">
+                    <div id="button6" class="button" onclick="push(6)">6</div><!--
+                    --><div id="button7" class="button" onclick="push(7)">7</div><!--
+                    --><div id="button8" class="button" onclick="push(8)">8</div><!--
+                    --><div id="button9" class="button" onclick="push(9)">9</div><!--
+                    --><div id="button0" class="button" onclick="push(0)">0</div><!--
+                    --><div id="buttonDelete" class="buttonRed" onclick="pushDelete()">BS</div>
+                </div>
+                <div id="column3">
+                    <div id="buttonT" class="buttonGray" onclick="push(10)">T</div><!--
+                    --><div id="buttonJ" class="buttonGray" onclick="push(11)">J</div><!--
+                    --><div id="buttonQ" class="buttonGray" onclick="push(12)">Q</div><!--
+                    --><div id="buttonK" class="buttonGray" onclick="push(13)">K</div><!--
+                    --><div id="buttonJudge" onclick="pushJudge()">Judge</div>
+                </div>
+            </div>
+            
+            <script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
+            <script>
+                var timerLength = 600
+                var matchLength = 900
+                var thinkingLength = 60
+                var countA = timerLength
+                var countB = timerLength
+                var countC = matchLength
+                var movingA = false
+                var movingB = false
+                var movingC = false
+                var thinkingTime = true
+                var timerIDA
+                var timerIDB
+                var timerIDC
+                var number = bigInt(0)
+                var judged = false
+                function timerFormat(second) {
+                    var str = String(second / 10)
+                    if(second % 10 === 0) str += ".0"
+                    return str
+                }
+            function timerFormat2(second) {
+                var s = ""
+                if (second / 60 < 10) s += "0"
+                s += second / 60 | 0
+                s += ":"
+                if (second % 60 < 10) s += "0"
+                s += second % 60
+                return s
+            }
+            document.getElementById("textA").innerHTML = timerFormat(countA)
+            document.getElementById("textB").innerHTML = timerFormat(countB)
+            document.getElementById("textC").innerHTML = timerFormat2(countC)
+            document.getElementById("textC").classList.add("thinking")
+            document.getElementById("timerA").onclick = function() {
+                if (thinkingTime) return
+                clearInterval(timerIDA)
+                clearInterval(timerIDB)
+                if (movingB) {
+                    document.getElementById("textB").classList.remove("moving")
+                    movingB = false
+                }
+                if (movingA) {
+                    document.getElementById("textA").classList.remove("moving")
+                    movingA = false
+                }
+                else {
+                    countA = timerLength
+                    timerIDA = setInterval("countTimerA()", 100)
+                    movingA = true
+                    document.getElementById("textA").classList.add("moving")
+                }
+                if (!movingC) {
+                    countC = matchLength
+                    timerIDC = setInterval("countTimerC()", 1000)
+                    movingC = true
+                    document.getElementById("textC").classList.add("moving")
+                }
+            }
+            document.getElementById("timerB").onclick = function() {
+                if (thinkingTime) return
+                clearInterval(timerIDA)
+                clearInterval(timerIDB)
+                if (movingA) {
+                    document.getElementById("textA").classList.remove("moving")
+                    movingA = false
+                }
+                if (movingB) {
+                    document.getElementById("textB").classList.remove("moving")
+                    movingB = false
+                }
+                else {
+                    countB = timerLength
+                    timerIDB = setInterval("countTimerB()", 100)
+                    movingB = true
+                    document.getElementById("textB").classList.add("moving")
+                }
+                if (!movingC) {
+                    countC = matchLength
+                    timerIDC = setInterval("countTimerC()", 1000)
+                    movingC = true
+                    document.getElementById("textC").classList.add("moving")
+                }
+            }
+            document.getElementById("timerC").onclick = function() {
+                if (!thinkingTime || movingC) return
+                timerIDC = setInterval("countTimerC()", 1000)
+                movingC = true
+                document.getElementById("textC").classList.remove("thinking")
+                document.getElementById("textC").classList.add("moving")
+            }
+            function countTimerA() {
+                countA--
+                document.getElementById("textA").innerHTML = timerFormat(countA)
+                if (countA === 0) {
+                    clearInterval(timerIDA)
+                    document.getElementById("textA").classList.remove("moving")
+                    movingA = false
+                }
+            }
+            function countTimerB() {
+                countB--
+                document.getElementById("textB").innerHTML = timerFormat(countB)
+                if (countB === 0) {
+                    clearInterval(timerIDB)
+                    document.getElementById("textB").classList.remove("moving")
+                    movingB = false
+                }
+            }
+            function countTimerC() {
+                countC--
+                document.getElementById("textC").innerHTML = timerFormat2(countC)
+                if (countC === 0) {
+                    clearInterval(timerIDC)
+                    if (thinkingTime) {
+                        thinkingTime = false
+                        document.getElementById("textC").classList.remove("moving")
+                    }
+                }
+            }
+            function resetTimer() {
+                clearInterval(timerIDA)
+                clearInterval(timerIDB)
+                clearInterval(timerIDC)
+                countA = timerLength
+                countB = timerLength
+                countC = thinkingLength
+                movingA = false
+                movingB = false
+                movingC = false
+                thinkingTime = true
+                document.getElementById("textA").innerHTML = timerFormat(countA)
+                document.getElementById("textB").innerHTML = timerFormat(countB)
+                document.getElementById("textC").innerHTML = timerFormat2(countC)
+                document.getElementById("textA").classList.remove("moving")
+                document.getElementById("textB").classList.remove("moving")
+                document.getElementById("textC").classList.remove("moving")
+            }
+            document.getElementById("judgeNumber").innerHTML = number.toString()
+            function push(x) {
+                if(judged) {
+                    judged = false
+                    number = bigInt(0)
+                }
+                if(x > 9) number = number.multiply(100)
+                else number = number.multiply(10)
+                number = number.add(x)
+                document.getElementById("judgeNumber").innerHTML = number.toString()
+                document.getElementById("result").innerHTML = "　"
+            }
+            function pushClear() {
+                judged = false
+                number = bigInt(0)
+                document.getElementById("judgeNumber").innerHTML = number.toString()
+                document.getElementById("result").innerHTML = "　"
+            }
+            function pushDelete() {
+                judged = false
+                number = number.over(10)
+                document.getElementById("judgeNumber").innerHTML = number.toString()
+                document.getElementById("result").innerHTML = "　"
+            }
+            function pushJudge() {
+                judged = true
+                if(number.isProbablePrime(100)) document.getElementById("result").innerHTML = "は素数です"
+                else document.getElementById("result").innerHTML = "は素数ではありません"
+            }
+            </script>
+    </body>
 </html>
